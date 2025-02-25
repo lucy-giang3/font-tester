@@ -15,7 +15,6 @@ export default function FontTester() {
   const [copiedStyle, setCopiedStyle] = useState<{
     fontColor: string;
     bgColor: string;
-    fontSize: number;
   } | null>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,49 +45,50 @@ export default function FontTester() {
     setFonts((prevFonts) => prevFonts.filter((font) => font.id !== id));
   };
 
-  const copyStyle = (font: {
-    fontColor: string;
-    bgColor: string;
-    fontSize: number;
-  }) => {
-    setCopiedStyle({
-      fontColor: font.fontColor,
-      bgColor: font.bgColor,
-      fontSize: font.fontSize,
-    });
+  const copyStyle = (font: { fontColor: string; bgColor: string }) => {
+    setCopiedStyle({ fontColor: font.fontColor, bgColor: font.bgColor });
   };
 
   const pasteStyle = (id: number) => {
     if (copiedStyle) {
       setFonts((prevFonts) =>
         prevFonts.map((font) =>
-          font.id === id ? { ...font, ...copiedStyle } : font
+          font.id === id
+            ? {
+                ...font,
+                fontColor: copiedStyle.fontColor,
+                bgColor: copiedStyle.bgColor,
+              }
+            : font
         )
       );
     }
   };
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <label className="mb-4 px-4 py-2 bg-blue-500 text-white rounded cursor-pointer">
-        Upload File
+    <div className="flex flex-col items-center p-4 min-h-screen w-full bg-[#dededb] text-[#1d1d1d]">
+      <h1 className="text-3xl font-bold mb-4">Font Tester</h1>
+      <div className="flex items-center gap-2 mb-4">
         <input
-          type="file"
-          accept=".ttf,.otf,.woff,.woff2"
-          onChange={handleFileUpload}
-          className="hidden"
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="border p-2 bg-white text-[#1d1d1d] rounded"
         />
-      </label>
-      <input
-        type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        className="border p-2 mb-4"
-      />
+        <label className="px-4 py-2 bg-[#1d1d1d] text-[#dededb] rounded cursor-pointer">
+          Upload File
+          <input
+            type="file"
+            accept=".ttf,.otf,.woff,.woff2"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </label>
+      </div>
       {fonts.map((font) => (
         <div
           key={font.id}
-          className="mt-4 p-4 border rounded shadow flex flex-col items-center w-full max-w-lg"
+          className="mt-4 p-4 border rounded shadow flex flex-col items-center w-full max-w-lg border-[#1d1d1d] bg-transparent"
         >
           <div className="w-full flex items-center justify-between">
             <div
@@ -129,12 +129,15 @@ export default function FontTester() {
                 type="number"
                 value={font.fontSize}
                 min="8"
-                max="100"
+                max="40"
                 onChange={(e) =>
                   setFonts((prevFonts) =>
                     prevFonts.map((f) =>
                       f.id === font.id
-                        ? { ...f, fontSize: parseInt(e.target.value) }
+                        ? {
+                            ...f,
+                            fontSize: Math.min(40, parseInt(e.target.value)),
+                          }
                         : f
                     )
                   )
@@ -163,7 +166,10 @@ export default function FontTester() {
               </button>
             </div>
           </div>
-          <p className="mt-2 text-sm text-gray-500">{font.file.name}</p>
+          <p className="mt-2 text-sm text-[#1d1d1d]">{font.file.name}</p>
+          <div className="absolute bottom-[1%] text-sm text-[#68696a]">
+            github/lucy-giang3
+          </div>
         </div>
       ))}
     </div>
