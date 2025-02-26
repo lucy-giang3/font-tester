@@ -12,4 +12,4 @@ This is an interactive web tool designed to help users explore and preview vario
 - TailwindCSS
 - HTML5
 
-![Font Tester Screenshot](./assets/example.png)
+![Font Tester Screenshot](./example.PNG)
